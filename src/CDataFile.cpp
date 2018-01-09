@@ -39,9 +39,12 @@
 #include <string>
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h> // atof
 #include <stdarg.h>
-#include <fstream.h>
-#include <float.h>
+#include <string.h> // memset
+#include <fstream>
+#include <float.h>  // FLT_MIN
+#include <limits.h> // INT_MIN
 
 #if defined(WIN32)
 	#include <windows.h>
@@ -118,7 +121,7 @@ bool CDataFile::Load(t_Str szFileName)
 {
 	// We dont want to create a new file here.  If it doesn't exist, just
 	// return false and report the failure.
-	fstream File(szFileName.c_str(), ios::in|ios::nocreate);
+	std::ifstream File(szFileName.c_str());
 
 	if ( File.is_open() )
 	{
@@ -212,7 +215,7 @@ bool CDataFile::Save()
 		return false;
 	}
 
-	fstream File(m_szFileName.c_str(), ios::out|ios::trunc);
+	std::ofstream File(m_szFileName.c_str(), std::ios::out|std::ios::trunc);
 
 	if ( File.is_open() )
 	{
@@ -738,7 +741,7 @@ void Trim(t_Str& szStr)
 // WriteLn
 // Writes the formatted output to the file stream, returning the number of
 // bytes written.
-int WriteLn(fstream& stream, char* fmt, ...)
+int WriteLn(std::ofstream &stream, const char *fmt, ...)
 {
 	char buf[MAX_BUFFER_LEN];
 	int nLength;
@@ -765,7 +768,7 @@ int WriteLn(fstream& stream, char* fmt, ...)
 // A simple reporting function. Outputs the report messages to stdout
 // This is a dumb'd down version of a simmilar function of mine, so if
 // it looks like it should do more than it does, that's why...
-void Report(e_DebugLevel DebugLevel, char *fmt, ...)
+void Report(e_DebugLevel DebugLevel, const char *fmt, ...)
 {
 	char buf[MAX_BUFFER_LEN];
 	int nLength;

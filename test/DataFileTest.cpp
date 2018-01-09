@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <float.h>	// needed for the FLT_MIN define
+#include <limits.h> // needed for the INT_MIN define
 
 #include "CDataFile.h"
 
