@@ -1,23 +1,28 @@
 #
-# Makefile for CDataFile
-# 
+# Makefile for CDataFile2
+#
 
-CC      = egcs
-PROF    = -O -ggdb
-LFLAGS  = $(PROF) -rdynamic -lstdc++
-CFLAGS  = -Wall $(PROF) -D_XOPEN_SOURCE 
-#IPATH   = -I/usr/include/g++-2/
-IPATH   =
+EXE := test/cdfTest.out
+OUTDIR := test
+INTDIR := $(OUTDIR)/obj
 
-OFILES =   CDataFile.o DataFileTest.o
+VPATH := src test
+CFLAGS += -Isrc
+OBJS := $(notdir $(wildcard $(addsuffix /*.cpp, $(VPATH) ) ) )
+OBJS := $(addprefix $(INTDIR)/, $(OBJS:.cpp=.o) )
 
-all: cdf
+#-------------------------
 
-cdf:  $(OFILES)
-	@echo "-*-- Linking..."
-	@$(CC) $(LFLAGS) -o cdfTest $(OFILES) 
+.PHONY : all
 
-.c.o: CDataFile.h
-	@echo "Compiling $<..."
-	@$(CC) -c $(CFLAGS) $(IPATH)  $<
+all : $(EXE)
 
+$(EXE) : $(OBJS)
+	$(CXX) -o $@ $(LFLAGS) $^
+
+$(INTDIR)/%.o : %.cpp | $(INTDIR)
+	$(CXX) -o $@  $(CFLAGS) -c $<
+
+# Create output and intermed dirs
+$(INTDIR) :
+	mkdir -p $@
