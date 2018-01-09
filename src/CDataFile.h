@@ -140,7 +140,7 @@ typedef SectionList::iterator SectionItor;
 /////////////////////////////////////////////////////////////////////////////////
 void  Report(e_DebugLevel DebugLevel, const char *fmt, ...);
 t_Str GetNextWord(t_Str& CommandLine);
-int   CompareNoCase(t_Str str1, t_Str str2);
+int   CompareNoCase(const t_Str &str1, const t_Str &str2);
 void  Trim(t_Str& szStr);
 int   WriteLn(std::ofstream& stream, const char* fmt, ...);
 
@@ -157,12 +157,12 @@ public:
 	// Constructors & Destructors
 	/////////////////////////////////////////////////////////////////
 	CDataFile();
-	CDataFile(t_Str szFileName);
+	CDataFile(const t_Str &szFileName);
 	virtual ~CDataFile();
 
 	// File handling methods
 	/////////////////////////////////////////////////////////////////
-	bool Load(t_Str szFileName);
+	bool Load(const t_Str &szFileName);
 	bool Save();
 
 	// Data handling methods
@@ -182,35 +182,35 @@ public:
 
 	// SetValue: Sets the value of a given key. Will create the
 	// key if it is not found and AUTOCREATE_KEYS is active.
-	bool SetValue(t_Str szKey, t_Str szValue,
-		t_Str szComment = t_Str(""), t_Str szSection = t_Str(""));
+	bool SetValue(const t_Str &szKey, const t_Str &szValue,
+		const t_Str &szComment, const t_Str &szSection);
 
 	// SetFloat: Sets the value of a given key. Will create the
 	// key if it is not found and AUTOCREATE_KEYS is active.
-	bool SetFloat(t_Str szKey, float fValue,
-		t_Str szComment = t_Str(""), t_Str szSection = t_Str(""));
+	bool SetFloat(const t_Str &szKey, float fValue,
+		const t_Str &szComment, const t_Str &szSection);
 
 	// SetInt: Sets the value of a given key. Will create the
 	// key if it is not found and AUTOCREATE_KEYS is active.
-	bool SetInt(t_Str szKey, int nValue,
-		t_Str szComment = t_Str(""), t_Str szSection = t_Str(""));
+	bool SetInt(const t_Str &szKey, int nValue,
+		t_Str szComment, t_Str szSection);
 
 	// SetBool: Sets the value of a given key. Will create the
 	// key if it is not found and AUTOCREATE_KEYS is active.
-	bool SetBool(t_Str szKey, bool bValue,
-		t_Str szComment = t_Str(""), t_Str szSection = t_Str(""));
+	bool SetBool(const t_Str &szKey, bool bValue,
+		t_Str szComment, t_Str szSection);
 
 	// Sets the comment for a given key.
-	bool SetKeyComment(t_Str szKey, t_Str szComment, t_Str szSection = t_Str(""));
+	bool SetKeyComment(const t_Str &szKey, const t_Str &szComment, const t_Str &szSection);
 
 	// Sets the comment for a given section
-	bool SetSectionComment(t_Str szSection, t_Str szComment);
+	bool SetSectionComment(const t_Str &szSection, const t_Str &szComment);
 
 	// DeleteKey: Deletes a given key from a specific section
-	bool DeleteKey(t_Str szKey, t_Str szFromSection = t_Str(""));
+	bool DeleteKey(const t_Str &szKey, const t_Str &szFromSection);
 
 	// DeleteSection: Deletes a given section.
-	bool DeleteSection(t_Str szSection);
+	bool DeleteSection(const t_Str &szSection);
 
 	// Key/Section handling methods
 	/////////////////////////////////////////////////////////////////
@@ -218,14 +218,14 @@ public:
 	// CreateKey: Creates a new key in the requested section. The
 	// Section will be created if it does not exist and the
 	// AUTOCREATE_SECTIONS bit is set.
-	bool CreateKey(t_Str szKey, t_Str szValue,
-		t_Str szComment = t_Str(""), t_Str szSection = t_Str(""));
+	bool CreateKey(const t_Str &szKey, const t_Str &szValue,
+		const t_Str &szComment, const t_Str &szSection);
 	// CreateSection: Creates the new section if it does not allready
 	// exist. Section is created with no keys.
-	bool CreateSection(t_Str szSection, t_Str szComment = t_Str(""));
+	bool CreateSection(const t_Str &szSection, const t_Str &szComment);
 	// CreateSection: Creates the new section if it does not allready
 	// exist, and copies the keys passed into it into the new section.
-	bool CreateSection(t_Str szSection, t_Str szComment, KeyList Keys);
+	bool CreateSection(const t_Str &szSection, const t_Str &szComment, KeyList Keys);
 
 	// Utility Methods
 	/////////////////////////////////////////////////////////////////
@@ -237,10 +237,10 @@ public:
 	void Clear();
 	// SetFileName: For use when creating the object by hand
 	// initializes the file name so that it can be later saved.
-	void SetFileName(t_Str szFileName);
+	void SetFileName(const t_Str &szFileName);
 	// CommentStr
 	// Parses a string into a proper comment token/comment.
-	t_Str CommentStr(t_Str szComment);
+	static t_Str CommentStr(t_Str szComment);
 
 
 protected:
@@ -255,9 +255,9 @@ protected:
 
 	// GetKey: Returns the requested key (if found) from the requested
 	// Section. Returns NULL otherwise.
-	t_Key* GetKey(t_Str szKey, t_Str szSection);
+	t_Key* GetKey(const t_Str &szKey, const t_Str &szSection);
 	// GetSection: Returns the requested section (if found), NULL otherwise.
-	t_Section* GetSection(t_Str szSection);
+	t_Section* GetSection(const t_Str &szSection);
 
 
 // Data

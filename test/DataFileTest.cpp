@@ -103,8 +103,8 @@ void doSomething()
 	// At this point, NewDF contains one section, the default section named "".
 
 	// Add a couple of new keys to the default section.
-	NewDF.CreateKey("Letters", "abcdefghijklmnopqrstuvwxyz");
-	NewDF.CreateKey("Numbers", "0123456789");
+	NewDF.CreateKey("Letters", "abcdefghijklmnopqrstuvwxyz", "", "");
+	NewDF.CreateKey("Numbers", "0123456789", "", "");
 
 	// Create a new section
 	// The first value is the section name, the second value is the comment.
@@ -125,25 +125,6 @@ void doSomething()
 		"01",
 		"; The current version",
 		"ApplicationSettings");
-
-	// A note about default values /////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////////////////
-	// Several of these functions use default empty values (t_Str("")) for
-	// the comment and section fields, this can bite you if your not careful.
-	// For example;
-	//
-	// NewDF.SetValue("date compiled",
-	//			   "July 23rd, 2002",
-	//			   "Settings");
-	//
-	// While it looks like your passing the Section name in (as Settings)
-	// in fact, this is the comment field. Doing this will cause unexpected
-	// results to show up in your file. (It will look like you have a section
-	// named "Settings", but it will not have the [] brackets around
-	// it).  This is easy to spot once you know what your looking for, but
-	// it's definately something to watch out for.
-	////////////////////////////////////////////////////////////////////////////
-
 
 	// Add a key with SetValue, that contains spaces.
 	NewDF.SetValue("date compiled",
@@ -167,9 +148,9 @@ void doSomething()
 
 	// Ok, test some of our access methods...
 
-	NewDF.SetBool("is_bool", true);
-	NewDF.SetInt("is_int", 100);
-	NewDF.SetFloat("is_float", 3.21f);
+	NewDF.SetBool("is_bool", true, "", "");
+	NewDF.SetInt("is_int", 100, "", "");
+	NewDF.SetFloat("is_float", 3.21f, "", "");
 
 	NewDF.SetSectionComment("ApplicationSettings", "Application Settings Comment");
 	NewDF.SetKeyComment("install_path", "; Location installed to.", "ApplicationSettings");
