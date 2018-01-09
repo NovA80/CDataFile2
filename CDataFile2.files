@@ -1,0 +1,11 @@
+src/CDataFile.cpp
+src/CDataFile.h
+test/DataFileTest.cpp
+test/new.ini
+test/test.ini
+test/win.ini
+DataFileTest.dsp
+DataFileTest.dsw
+LICENSE
+ReadMe.txt
+Makefile
