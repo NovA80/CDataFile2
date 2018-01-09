@@ -20,8 +20,8 @@ void doSomething()
 	// CDataFile will be populated with it's key/value pair contents.
 	////////////////////////////////////////////////////////////////////////////
 
-	// Create the object, passing in the file name. The file will be loaded 
-	// (if it can be) and the objects keys set to the contents of the file. 
+	// Create the object, passing in the file name. The file will be loaded
+	// (if it can be) and the objects keys set to the contents of the file.
 	// The file is then closed.
 	CDataFile ExistingDF("test.ini");
 
@@ -43,16 +43,16 @@ void doSomething()
 	szAuthor = ExistingDF.GetString("author");
 	if ( szAuthor.size() == 0 )
 		Report(E_INFO, "[doSomething] Key 'author' was not found.");
-	else		
+	else
 		Report(E_INFO, "[doSomething] Key 'author' contains the value '%s'",
-						szAuthor.c_str());
+			szAuthor.c_str());
 
 	fValue  = ExistingDF.GetFloat("main_key_float", "Main");
 	if ( fValue == FLT_MIN )
 		Report(E_INFO, "[doSomething] Key 'main_key_float' was not found.");
 	else
 		Report(E_INFO, "[doSomething] Key 'main_key_float' contains the value '%f'",
-						fValue);
+			fValue);
 
 	nValue  = ExistingDF.GetInt("non existent key", "Main");
 
@@ -60,7 +60,7 @@ void doSomething()
 		Report(E_INFO, "[doSomething] Key 'non existent key' was not found.");
 	else
 		Report(E_INFO, "[doSomething] Key 'non existent key' contains the value '%d'",
-		               nValue);
+			nValue);
 
 
 
@@ -80,7 +80,7 @@ void doSomething()
 
 	// Use SetValue to create a new key
 
-	// Set the AUTOCREATE_KEYS flag. 
+	// Set the AUTOCREATE_KEYS flag.
 	ExistingDF.m_Flags |= AUTOCREATE_KEYS;
 
 	if ( ExistingDF.SetValue("new_key", "new_key_value", "Procedurally generated key", "Main") )
@@ -99,36 +99,36 @@ void doSomething()
 	// Test creating a new data file procedurally.
 	CDataFile NewDF;
 
-	// At this point, NewDF contains one section, the default section named "". 
+	// At this point, NewDF contains one section, the default section named "".
 
-	// Add a couple of new keys to the default section.  
+	// Add a couple of new keys to the default section.
 	NewDF.CreateKey("Letters", "abcdefghijklmnopqrstuvwxyz");
 	NewDF.CreateKey("Numbers", "0123456789");
 
 	// Create a new section
 	// The first value is the section name, the second value is the comment.
-	NewDF.CreateSection("ApplicationSettings", 
-						"; This section contains all of the generic application settings.");
+	NewDF.CreateSection("ApplicationSettings",
+		"; This section contains all of the generic application settings.");
 
 	// Add some keys to our new section. The arguments are;
 	// 1) the key name
 	// 2) The key value
 	// 3) The comment for the key (empty comments are not written to disk)
 	// 4) The section to put this value in. (Section must exist)
-	NewDF.CreateKey("install_path", 
-				   "c:\\projects\\cdatafile\\", 
-		           "; The path where this project has been installed to.", 
-				   "ApplicationSettings");
+	NewDF.CreateKey("install_path",
+		"c:\\projects\\cdatafile\\",
+		"; The path where this project has been installed to.",
+		"ApplicationSettings");
 
-	NewDF.CreateKey("version", 
-				   "01", 
-				   "; The current version", 
-				   "ApplicationSettings");
+	NewDF.CreateKey("version",
+		"01",
+		"; The current version",
+		"ApplicationSettings");
 
 	// A note about default values /////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
-	// Several of these functions use default empty values (t_Str("")) for 
-	// the comment and section fields, this can bite you if your not careful. 
+	// Several of these functions use default empty values (t_Str("")) for
+	// the comment and section fields, this can bite you if your not careful.
 	// For example;
 	//
 	// NewDF.SetValue("date compiled",
@@ -147,10 +147,10 @@ void doSomething()
 	// Add a key with SetValue, that contains spaces.
 	NewDF.SetValue("date compiled",
 				   "July 23rd, 2002",
-				   "",  
+				   "",
 				   "ApplicationSettings");
-	
-	// Now, if we had read this data file from disk, then the file name 	
+
+	// Now, if we had read this data file from disk, then the file name
 	// would allready be stored, but since we created it procedurally, we
 	// have to provide the filename.
 	NewDF.SetFileName("new.ini");
@@ -158,9 +158,9 @@ void doSomething()
 
 	// A note about my use of Save() ///////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
-	// When testing this, what I like to do is open the 'new' and 'test'.ini 
-	// files up in a text editor and step through this program line by line. 
-	// This way, after each save, I can reload the changes in the editor and 
+	// When testing this, what I like to do is open the 'new' and 'test'.ini
+	// files up in a text editor and step through this program line by line.
+	// This way, after each save, I can reload the changes in the editor and
 	// see whether or not the output is what I expected.
 	////////////////////////////////////////////////////////////////////////////
 
@@ -172,26 +172,25 @@ void doSomething()
 
 	NewDF.SetSectionComment("ApplicationSettings", "Application Settings Comment");
 	NewDF.SetKeyComment("install_path", "; Location installed to.", "ApplicationSettings");
-	NewDF.Save(); 
+	NewDF.Save();
 	NewDF.DeleteKey("version", "ApplicationSettings");
-	NewDF.Save(); 
+	NewDF.Save();
 
 
 	// Uncomment this next line to test Section deletion.
 	//	NewDF.DeleteSection("ApplicationSettings");
 
 
-
 	// A note about comments ///////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////
-	// Comments are generally your responsibility.  While the code does append 
-	// a comment indicator (as defined in CDataFile.h, it will append the first 
-	// indicator in the constant) it makes no attempt to validate multiline 
-	// comments.  
+	// Comments are generally your responsibility.  While the code does append
+	// a comment indicator (as defined in CDataFile.h, it will append the first
+	// indicator in the constant) it makes no attempt to validate multiline
+	// comments.
 	////////////////////////////////////////////////////////////////////////////
 
 	Report(E_INFO, "[doSomething] The file <new.ini> contains %d sections, & %d keys.",
-				   NewDF.SectionCount(), NewDF.KeyCount());
+		NewDF.SectionCount(), NewDF.KeyCount());
 
 	// If we did not explicitly call Save here, then the destructor would save the
 	//  file since the data has been modified.  But we'll call it anyway.
@@ -205,14 +204,14 @@ void doSomething()
 	CDataFile WinDF("win.ini");
 
 	Report(E_INFO, "[doSomething] The file <win.ini> contains %d sections, & %d keys.",
-				   WinDF.SectionCount(), WinDF.KeyCount());
+		WinDF.SectionCount(), WinDF.KeyCount());
 
 	WinDF.Save();
 }
 
 int main(int argc, char* argv[])
-{	
+{
 	doSomething();
-	
+
 	return  0;
 }

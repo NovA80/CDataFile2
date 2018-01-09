@@ -43,8 +43,8 @@
 #include <fstream.h>
 #include <float.h>
 
-#ifdef WIN32
-#include <windows.h>
+#if defined(WIN32)
+	#include <windows.h>
 #endif
 
 #include "CDataFile.h"
@@ -52,8 +52,8 @@
 // Compatibility Defines ////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 #ifdef WIN32
-  #define snprintf  _snprintf
-  #define vsnprintf _vsnprintf
+	#define snprintf  _snprintf
+	#define vsnprintf _vsnprintf
 #endif
 
 
@@ -104,14 +104,14 @@ void CDataFile::SetFileName(t_Str szFileName)
 		m_bDirty = true;
 
 		Report(E_WARN, "[CDataFile::SetFileName] The filename has changed from <%s> to <%s>.",
-			   m_szFileName.c_str(), szFileName.c_str());
+			m_szFileName.c_str(), szFileName.c_str());
 	}
 
 	m_szFileName = szFileName;
 }
 
 // Load
-// Attempts to load in the text file. If successful it will populate the 
+// Attempts to load in the text file. If successful it will populate the
 // Section list with the key/value pairs found in the file. Note that comments
 // are saved so that they can be rewritten to the file later.
 bool CDataFile::Load(t_Str szFileName)
@@ -125,10 +125,10 @@ bool CDataFile::Load(t_Str szFileName)
 		bool bDone = false;
 		bool bAutoKey = (m_Flags & AUTOCREATE_KEYS) == AUTOCREATE_KEYS;
 		bool bAutoSec = (m_Flags & AUTOCREATE_SECTIONS) == AUTOCREATE_SECTIONS;
-		
+
 		t_Str szLine;
 		t_Str szComment;
-		char buffer[MAX_BUFFER_LEN]; 
+		char buffer[MAX_BUFFER_LEN];
 		t_Section* pSection = GetSection("");
 
 		// These need to be set, we'll restore the original values later.
@@ -160,7 +160,7 @@ bool CDataFile::Load(t_Str szFileName)
 				pSection = GetSection(szLine);
 				szComment = t_Str("");
 			}
-			else 
+			else
 			if ( szLine.size() > 0 ) // we have a key, add this key/value pair
 			{
 				t_Str szKey = GetNextWord(szLine);
@@ -203,7 +203,7 @@ bool CDataFile::Save()
 	{
 		// no point in saving
 		Report(E_INFO, "[CDataFile::Save] Nothing to save.");
-		return false; 
+		return false;
 	}
 
 	if ( m_szFileName.size() == 0 )
@@ -234,8 +234,8 @@ bool CDataFile::Save()
 
 			if ( Section.szName.size() > 0 )
 			{
-				WriteLn(File, "%s[%s]", 
-						bWroteComment ? "" : "\n", 
+				WriteLn(File, "%s[%s]",
+						bWroteComment ? "" : "\n",
 						Section.szName.c_str());
 			}
 
@@ -245,7 +245,7 @@ bool CDataFile::Save()
 
 				if ( Key.szKey.size() > 0 && Key.szValue.size() > 0 )
 				{
-					WriteLn(File, "%s%s%s%s%c%s", 
+					WriteLn(File, "%s%s%s%s%c%s",
 						Key.szComment.size() > 0 ? "\n" : "",
 						CommentStr(Key.szComment).c_str(),
 						Key.szComment.size() > 0 ? "\n" : "",
@@ -255,7 +255,7 @@ bool CDataFile::Save()
 				}
 			}
 		}
-		
+
 	}
 	else
 	{
@@ -264,7 +264,7 @@ bool CDataFile::Save()
 	}
 
 	m_bDirty = false;
-	
+
 	File.flush();
 	File.close();
 
@@ -304,9 +304,9 @@ bool CDataFile::SetSectionComment(t_Str szSection, t_Str szComment)
 
 	for (s_pos = m_Sections.begin(); s_pos != m_Sections.end(); s_pos++)
 	{
-		if ( CompareNoCase( (*s_pos).szName, szSection ) == 0 ) 
+		if ( CompareNoCase( (*s_pos).szName, szSection ) == 0 )
 		{
-		    (*s_pos).szComment = szComment;
+			(*s_pos).szComment = szComment;
 			m_bDirty = true;
 			return true;
 		}
@@ -338,7 +338,7 @@ bool CDataFile::SetValue(t_Str szKey, t_Str szValue, t_Str szComment, t_Str szSe
 	if ( pSection == NULL )
 		return false;
 
-	// if the key does not exist in that section, and the value passed 
+	// if the key does not exist in that section, and the value passed
 	// is not t_Str("") then add the new key.
 	if ( pKey == NULL && szValue.size() > 0 && (m_Flags & AUTOCREATE_KEYS))
 	{
@@ -347,9 +347,9 @@ bool CDataFile::SetValue(t_Str szKey, t_Str szValue, t_Str szComment, t_Str szSe
 		pKey->szKey = szKey;
 		pKey->szValue = szValue;
 		pKey->szComment = szComment;
-		
+
 		m_bDirty = true;
-		
+
 		pSection->Keys.push_back(*pKey);
 
 		return true;
@@ -361,7 +361,7 @@ bool CDataFile::SetValue(t_Str szKey, t_Str szValue, t_Str szComment, t_Str szSe
 		pKey->szComment = szComment;
 
 		m_bDirty = true;
-		
+
 		return true;
 	}
 
@@ -403,7 +403,7 @@ bool CDataFile::SetBool(t_Str szKey, bool bValue, t_Str szComment, t_Str szSecti
 // GetValue
 // Returns the key value as a t_Str object. A return value of
 // t_Str("") indicates that the key could not be found.
-t_Str CDataFile::GetValue(t_Str szKey, t_Str szSection) 
+t_Str CDataFile::GetValue(t_Str szKey, t_Str szSection)
 {
 	t_Key* pKey = GetKey(szKey, szSection);
 
@@ -452,8 +452,8 @@ bool CDataFile::GetBool(t_Str szKey, t_Str szSection)
 	bool bValue = false;
 	t_Str szValue = GetValue(szKey, szSection);
 
-	if ( szValue.find("1") == 0 
-		|| CompareNoCase(szValue, "true") 
+	if ( szValue.find("1") == 0
+		|| CompareNoCase(szValue, "true")
 		|| CompareNoCase(szValue, "yes") )
 	{
 		bValue = true;
@@ -463,7 +463,7 @@ bool CDataFile::GetBool(t_Str szKey, t_Str szSection)
 }
 
 // DeleteSection
-// Delete a specific section. Returns false if the section cannot be 
+// Delete a specific section. Returns false if the section cannot be
 // found or true when sucessfully deleted.
 bool CDataFile::DeleteSection(t_Str szSection)
 {
@@ -471,7 +471,7 @@ bool CDataFile::DeleteSection(t_Str szSection)
 
 	for (s_pos = m_Sections.begin(); s_pos != m_Sections.end(); s_pos++)
 	{
-		if ( CompareNoCase( (*s_pos).szName, szSection ) == 0 ) 
+		if ( CompareNoCase( (*s_pos).szName, szSection ) == 0 )
 		{
 			m_Sections.erase(s_pos);
 			return true;
@@ -529,7 +529,7 @@ bool CDataFile::CreateKey(t_Str szKey, t_Str szValue, t_Str szComment, t_Str szS
 // Given a section name, this function first checks to see if the given section
 // allready exists in the list or not, if not, it creates the new section and
 // assigns it the comment given in szComment.  The function returns true if
-// sucessfully created, or false otherwise. 
+// sucessfully created, or false otherwise.
 bool CDataFile::CreateSection(t_Str szSection, t_Str szComment)
 {
 	t_Section* pSection = GetSection(szSection);
@@ -554,7 +554,7 @@ bool CDataFile::CreateSection(t_Str szSection, t_Str szComment)
 // Given a section name, this function first checks to see if the given section
 // allready exists in the list or not, if not, it creates the new section and
 // assigns it the comment given in szComment.  The function returns true if
-// sucessfully created, or false otherwise. This version accpets a KeyList 
+// sucessfully created, or false otherwise. This version accpets a KeyList
 // and sets up the newly created Section with the keys in the list.
 bool CDataFile::CreateSection(t_Str szSection, t_Str szComment, KeyList Keys)
 {
@@ -587,9 +587,9 @@ bool CDataFile::CreateSection(t_Str szSection, t_Str szComment, KeyList Keys)
 
 // SectionCount
 // Simply returns the number of sections in the list.
-int CDataFile::SectionCount() 
-{ 
-	return m_Sections.size(); 
+int CDataFile::SectionCount()
+{
+	return m_Sections.size();
 }
 
 // KeyCount
@@ -641,7 +641,7 @@ t_Section* CDataFile::GetSection(t_Str szSection)
 
 	for (s_pos = m_Sections.begin(); s_pos != m_Sections.end(); s_pos++)
 	{
-		if ( CompareNoCase( (*s_pos).szName, szSection ) == 0 ) 
+		if ( CompareNoCase( (*s_pos).szName, szSection ) == 0 )
 			return (t_Section*)&(*s_pos);
 	}
 
@@ -655,9 +655,9 @@ t_Str CDataFile::CommentStr(t_Str szComment)
 
 	Trim(szComment);
 
-        if ( szComment.size() == 0 )
-          return szComment;
-	
+		if ( szComment.size() == 0 )
+			return szComment;
+
 	if ( szComment.find_first_of(CommentIndicators) != 0 )
 	{
 		szNewStr = CommentIndicators[0];
@@ -706,7 +706,7 @@ t_Str GetNextWord(t_Str& CommandLine)
 int CompareNoCase(t_Str str1, t_Str str2)
 {
 #ifdef WIN32
-	return stricmp(str1.c_str(), str2.c_str());	
+	return stricmp(str1.c_str(), str2.c_str());
 #else
 	return strcasecmp(str1.c_str(), str2.c_str());
 #endif
@@ -717,7 +717,7 @@ int CompareNoCase(t_Str str1, t_Str str2)
 void Trim(t_Str& szStr)
 {
 	t_Str szTrimChars = WhiteSpace;
-	
+
 	szTrimChars += EqualIndicators;
 	int nPos, rPos;
 
@@ -763,7 +763,7 @@ int WriteLn(fstream& stream, char* fmt, ...)
 
 // Report
 // A simple reporting function. Outputs the report messages to stdout
-// This is a dumb'd down version of a simmilar function of mine, so if 
+// This is a dumb'd down version of a simmilar function of mine, so if
 // it looks like it should do more than it does, that's why...
 void Report(e_DebugLevel DebugLevel, char *fmt, ...)
 {
@@ -817,4 +817,3 @@ void Report(e_DebugLevel DebugLevel, char *fmt, ...)
 	printf(szMsg.c_str());
 
 }
-
