@@ -41,12 +41,10 @@
 #include <string>
 #include <ctype.h>
 #include <stdio.h>
-#include <stdlib.h> // atof
 #include <stdarg.h>
 #include <string.h> // memset
 #include <fstream>
-#include <float.h>  // FLT_MIN
-#include <limits.h> // INT_MIN
+#include <sstream>
 
 #if defined(WIN32)
 	#include <windows.h>
@@ -434,7 +432,11 @@ bool CDataFile::GetFloat(const t_Str &szKey, const t_Str &szSection, float &ret)
 	if( ! GetValue(szKey, szSection, szValue) )
 		return false;
 
-	ret = (float)atof( szValue.c_str() );
+	float x;
+	if( (std::istringstream(szValue) >> x).fail() )
+		return false;
+
+	ret = x;
 	return true;
 }
 
@@ -447,7 +449,11 @@ bool CDataFile::GetInt(const t_Str &szKey, const t_Str &szSection, int &ret)
 	if( ! GetValue(szKey, szSection, szValue) )
 		return false;
 
-	ret = atoi( szValue.c_str() );
+	int n;
+	if( (std::istringstream(szValue) >> n).fail() )
+		return false;
+
+	ret = n;
 	return true;
 }
 
