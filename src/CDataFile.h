@@ -170,15 +170,15 @@ public:
 
 	// GetValue: Our default access method. Returns the raw t_Str value
 	// Note that this returns keys specific to the given section only.
-	t_Str GetValue(t_Str szKey, t_Str szSection = t_Str(""));
+	bool GetValue(const t_Str &szKey, const t_Str &szSection, t_Str &ret);
 	// GetString: Returns the value as a t_Str
-	t_Str GetString(t_Str szKey, t_Str szSection = t_Str(""));
+	bool GetString(const t_Str &szKey, const t_Str &szSection, t_Str& ret);
 	// GetFloat: Return the value as a float
-	float GetFloat(t_Str szKey, t_Str szSection = t_Str(""));
+	bool GetFloat(const t_Str &szKey, const t_Str &szSection, float &ret);
 	// GetInt: Return the value as an int
-	int   GetInt(t_Str szKey, t_Str szSection = t_Str(""));
+	bool GetInt(const t_Str &szKey, const t_Str &szSection, int &ret);
 	// GetBool: Return the value as a bool
-	bool GetBool(t_Str szKey, t_Str szSection = t_Str(""));
+	bool GetBool(const t_Str &szKey, const t_Str &szSection, bool &ret);
 
 	// SetValue: Sets the value of a given key. Will create the
 	// key if it is not found and AUTOCREATE_KEYS is active.

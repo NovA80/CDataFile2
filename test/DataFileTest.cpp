@@ -31,33 +31,23 @@ void doSomething()
 
 	// Querry the CDataFile for the values of some keys ////////////////////////
 	////////////////////////////////////////////////////////////////////////////
-	// Keys that are not found in the object will have the following values;
-	//
-	//   String based keys: t_Str("")
-	//   Int based keys   : INT_MIN
-	//   Float based keys : FLT_MIN
-	////////////////////////////////////////////////////////////////////////////
 	t_Str szAuthor  = t_Str("");
 	float fValue	= 0.0f;
 	int	  nValue	= 0;
 
-	szAuthor = ExistingDF.GetString("author");
-	if ( szAuthor.size() == 0 )
+	if ( ! ExistingDF.GetString("author", "", szAuthor) )
 		Report(E_INFO, "[doSomething] Key 'author' was not found.");
 	else
 		Report(E_INFO, "[doSomething] Key 'author' contains the value '%s'",
 			szAuthor.c_str());
 
-	fValue  = ExistingDF.GetFloat("main_key_float", "Main");
-	if ( fValue == FLT_MIN )
+	if ( ! ExistingDF.GetFloat("main_key_float", "Main", fValue) )
 		Report(E_INFO, "[doSomething] Key 'main_key_float' was not found.");
 	else
 		Report(E_INFO, "[doSomething] Key 'main_key_float' contains the value '%f'",
 			fValue);
 
-	nValue  = ExistingDF.GetInt("non existent key", "Main");
-
-	if ( nValue == INT_MIN )
+	if ( ! ExistingDF.GetInt("non existent key", "Main", nValue) )
 		Report(E_INFO, "[doSomething] Key 'non existent key' was not found.");
 	else
 		Report(E_INFO, "[doSomething] Key 'non existent key' contains the value '%d'",

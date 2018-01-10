@@ -11,6 +11,8 @@
 // Written July, 2002 by Gary McNickle <gary#sunstorm.net>
 // If you use this class in your application, credit would be appreciated.
 //
+// Updated January, 2017 by Andrey Novikov <AndrewNovikov@yandex.ru>
+//
 
 //
 // CDataFile
@@ -295,7 +297,6 @@ bool CDataFile::SetKeyComment(const t_Str &szKey, const t_Str &szComment, const 
 	}
 
 	return false;
-
 }
 
 // SetSectionComment
@@ -404,65 +405,69 @@ bool CDataFile::SetBool(const t_Str &szKey, bool bValue, t_Str szComment, t_Str 
 }
 
 // GetValue
-// Returns the key value as a t_Str object. A return value of
-// t_Str("") indicates that the key could not be found.
-t_Str CDataFile::GetValue(t_Str szKey, t_Str szSection)
+// Obtains the key value as a t_Str object. Returns false
+// if the key could not be found.
+bool CDataFile::GetValue(const t_Str &szKey, const t_Str &szSection, t_Str& ret)
 {
 	t_Key* pKey = GetKey(szKey, szSection);
+	if( ! pKey )
+		return false;
 
-	return (pKey == NULL) ? t_Str("") : pKey->szValue;
+	ret = pKey->szValue;
+	return true;
 }
 
 // GetString
-// Returns the key value as a t_Str object. A return value of
-// t_Str("") indicates that the key could not be found.
-t_Str CDataFile::GetString(t_Str szKey, t_Str szSection)
+// Obtains the key value as a t_Str object. Returns false
+// if the key could not be found.
+bool CDataFile::GetString(const t_Str &szKey, const t_Str &szSection, t_Str &ret)
 {
-	return GetValue(szKey, szSection);
+	return GetValue(szKey, szSection, ret);
 }
 
 // GetFloat
-// Returns the key value as a float type. Returns FLT_MIN if the key is
+// Obtains the key value as a float type. Returns false if the key is
 // not found.
-float CDataFile::GetFloat(t_Str szKey, t_Str szSection)
+bool CDataFile::GetFloat(const t_Str &szKey, const t_Str &szSection, float &ret)
 {
-	t_Str szValue = GetValue(szKey, szSection);
+	t_Str szValue;
+	if( ! GetValue(szKey, szSection, szValue) )
+		return false;
 
-	if ( szValue.size() == 0 )
-		return FLT_MIN;
-
-	return (float)atof( szValue.c_str() );
+	ret = (float)atof( szValue.c_str() );
+	return true;
 }
 
 // GetInt
-// Returns the key value as an integer type. Returns INT_MIN if the key is
+// Obtains the key value as an integer type. Returns false if the key is
 // not found.
-int	CDataFile::GetInt(t_Str szKey, t_Str szSection)
+bool CDataFile::GetInt(const t_Str &szKey, const t_Str &szSection, int &ret)
 {
-	t_Str szValue = GetValue(szKey, szSection);
+	t_Str szValue;
+	if( ! GetValue(szKey, szSection, szValue) )
+		return false;
 
-	if ( szValue.size() == 0 )
-		return INT_MIN;
-
-	return atoi( szValue.c_str() );
+	ret = atoi( szValue.c_str() );
+	return true;
 }
 
 // GetBool
-// Returns the key value as a bool type. Returns false if the key is
+// Obtains the key value as a bool type. Returns false if the key is
 // not found.
-bool CDataFile::GetBool(t_Str szKey, t_Str szSection)
+bool CDataFile::GetBool(const t_Str &szKey, const t_Str &szSection, bool &ret)
 {
-	bool bValue = false;
-	t_Str szValue = GetValue(szKey, szSection);
+	t_Str szValue;
+	if( ! GetValue(szKey, szSection, szValue) )
+		return false;
 
+	ret = false;
 	if ( szValue.find("1") == 0
-		|| CompareNoCase(szValue, "true")
-		|| CompareNoCase(szValue, "yes") )
-	{
-		bValue = true;
+		 || CompareNoCase(szValue, "true")
+		 || CompareNoCase(szValue, "yes") ) {
+		ret = true;
 	}
 
-	return bValue;
+	return true;
 }
 
 // DeleteSection
