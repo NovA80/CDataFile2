@@ -24,33 +24,33 @@ void doSomething()
 	// Create the object, passing in the file name. The file will be loaded
 	// (if it can be) and the objects keys set to the contents of the file.
 	// The file is then closed.
-	CDataFile ExistingDF("test.ini");
+	cdf::CDataFile ExistingDF("test.ini");
 
-	Report(E_INFO, "[doSomething] The file <test.ini> contains %d sections, & %d keys.",
+	cdf::Report(cdf::E_INFO, "[doSomething] The file <test.ini> contains %d sections, & %d keys.",
 				   ExistingDF.SectionCount(), ExistingDF.KeyCount());
 
 	// Querry the CDataFile for the values of some keys ////////////////////////
 	////////////////////////////////////////////////////////////////////////////
-	t_Str szAuthor  = t_Str("");
+	std::string szAuthor;
 	float fValue	= 0.0f;
 	int	  nValue	= 0;
 
 	if ( ! ExistingDF.GetString("author", "", szAuthor) )
-		Report(E_INFO, "[doSomething] Key 'author' was not found.");
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'author' was not found.");
 	else
-		Report(E_INFO, "[doSomething] Key 'author' contains the value '%s'",
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'author' contains the value '%s'",
 			szAuthor.c_str());
 
 	if ( ! ExistingDF.GetFloat("main_key_float", "Main", fValue) )
-		Report(E_INFO, "[doSomething] Key 'main_key_float' was not found.");
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'main_key_float' was not found.");
 	else
-		Report(E_INFO, "[doSomething] Key 'main_key_float' contains the value '%f'",
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'main_key_float' contains the value '%f'",
 			fValue);
 
 	if ( ! ExistingDF.GetInt("non existent key", "Main", nValue) )
-		Report(E_INFO, "[doSomething] Key 'non existent key' was not found.");
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'non existent key' was not found.");
 	else
-		Report(E_INFO, "[doSomething] Key 'non existent key' contains the value '%d'",
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'non existent key' contains the value '%d'",
 			nValue);
 
 
@@ -59,25 +59,25 @@ void doSomething()
 	////////////////////////////////////////////////////////////////////////////
 
 	// Turn off the AUTOCREATE_KEYS behavior.
-	ExistingDF.m_Flags &= ~AUTOCREATE_KEYS;
+	ExistingDF.m_Flags &= ~cdf::AUTOCREATE_KEYS;
 
 	// With AUTOCREATE_KEYS off, SetValue will fail if it cannot find
 	// the requested key. If it does find it, it will set the keys new
 	// value.
 	if ( ExistingDF.SetValue("main_key_float", "9.876543210", "", "Main") )
-		Report(E_INFO, "[doSomething] Key 'main_key_float' value changed.");
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'main_key_float' value changed.");
 	else
-		Report(E_INFO, "[doSomething] Key 'main_key_float' not found. Value not set.");
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'main_key_float' not found. Value not set.");
 
 	// Use SetValue to create a new key
 
 	// Set the AUTOCREATE_KEYS flag.
-	ExistingDF.m_Flags |= AUTOCREATE_KEYS;
+	ExistingDF.m_Flags |= cdf::AUTOCREATE_KEYS;
 
 	if ( ExistingDF.SetValue("new_key", "new_key_value", "Procedurally generated key", "Main") )
-		Report(E_INFO, "[doSomething] Key 'new_key' successfully added.");
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'new_key' successfully added.");
 	else
-		Report(E_INFO, "[doSomething] Key 'new_key' was not added.");
+		cdf::Report(cdf::E_INFO, "[doSomething] Key 'new_key' was not added.");
 
 
 	/// Section Two ////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ void doSomething()
 	////////////////////////////////////////////////////////////////////////////
 
 	// Test creating a new data file procedurally.
-	CDataFile NewDF;
+	cdf::CDataFile NewDF;
 
 	// At this point, NewDF contains one section, the default section named "".
 
@@ -161,7 +161,7 @@ void doSomething()
 	// comments.
 	////////////////////////////////////////////////////////////////////////////
 
-	Report(E_INFO, "[doSomething] The file <new.ini> contains %d sections, & %d keys.",
+	cdf::Report(cdf::E_INFO, "[doSomething] The file <new.ini> contains %d sections, & %d keys.",
 		NewDF.SectionCount(), NewDF.KeyCount());
 
 	// If we did not explicitly call Save here, then the destructor would save the
@@ -173,9 +173,9 @@ void doSomething()
 	////////////////////////////////////////////////////////////////////////////
 	// Test our ability to read/write to a standard Windows .ini file.
 	////////////////////////////////////////////////////////////////////////////
-	CDataFile WinDF("win.ini");
+	cdf::CDataFile WinDF("win.ini");
 
-	Report(E_INFO, "[doSomething] The file <win.ini> contains %d sections, & %d keys.",
+	cdf::Report(cdf::E_INFO, "[doSomething] The file <win.ini> contains %d sections, & %d keys.",
 		WinDF.SectionCount(), WinDF.KeyCount());
 
 	WinDF.Save();

@@ -19,6 +19,9 @@
 #include <fstream>
 #include <string>
 
+namespace cdf
+{
+
 // Globally defined structures, defines, & types
 //////////////////////////////////////////////////////////////////////////////////
 
@@ -270,4 +273,5 @@ protected:
 	bool        m_bDirty;      // Tracks whether or not data has changed.
 };
 
+} // namespace
 #endif
