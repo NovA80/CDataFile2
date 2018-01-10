@@ -169,7 +169,7 @@ bool CDataFile::Load(const t_Str& szFileName)
 				t_Str szKey = GetNextWord(szLine);
 				t_Str szValue = szLine;
 
-				if ( szKey.size() > 0 && szValue.size() > 0 )
+				if ( szKey.size() > 0 )
 				{
 					SetValue(szKey, szValue, szComment, pSection->szName);
 					szComment = t_Str("");
@@ -246,7 +246,7 @@ bool CDataFile::Save()
 			{
 				Key = (*k_pos);
 
-				if ( Key.szKey.size() > 0 && Key.szValue.size() > 0 )
+				if ( Key.szKey.size() > 0 )
 				{
 					WriteLn(File, "%s%s%s%s%c%s",
 						Key.szComment.size() > 0 ? "\n" : "",
@@ -340,9 +340,8 @@ bool CDataFile::SetValue(const t_Str &szKey, const t_Str &szValue, const t_Str &
 	if ( pSection == NULL )
 		return false;
 
-	// if the key does not exist in that section, and the value passed
-	// is not t_Str("") then add the new key.
-	if ( pKey == NULL && szValue.size() > 0 && (m_Flags & AUTOCREATE_KEYS))
+	// if the key does not exist in that section then add the new key.
+	if ( pKey == NULL && (m_Flags & AUTOCREATE_KEYS))
 	{
 		pKey = new t_Key;
 
