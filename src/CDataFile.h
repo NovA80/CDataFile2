@@ -247,6 +247,9 @@ public:
 	// Parses a string into a proper comment token/comment.
 	static t_Str CommentStr(t_Str szComment);
 
+	// SetDirty & IsDirty: Sets and gets the 'dirty' flag (the changed data marker).
+	void SetDirty(bool dirty);
+	bool IsDirty() const;
 
 protected:
 	// Note: I've tried to insulate the end user from the internal

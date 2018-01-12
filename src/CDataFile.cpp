@@ -66,12 +66,12 @@ using namespace cdf;
 // the section list with the values from the file.
 cdf::CDataFile::CDataFile(const t_Str &szFileName)
 {
-	m_bDirty = false;
 	m_szFileName = szFileName;
 	m_Flags = (AUTOCREATE_SECTIONS | AUTOCREATE_KEYS);
 	m_Sections.push_back( *(new t_Section) );
 
 	Load(m_szFileName);
+	m_bDirty = false;
 }
 
 cdf::CDataFile::CDataFile()
@@ -97,6 +97,21 @@ void cdf::CDataFile::Clear()
 	m_szFileName = t_Str("");
 	m_Sections.clear();
 }
+
+// SetDirty
+// Sets the 'dirty' flag to mark the data as changed or not
+void cdf::CDataFile::SetDirty(bool dirty)
+{
+	m_bDirty = dirty;
+}
+
+// IsDirty
+// Obtains the 'dirty' flag showing the data is changed or not
+bool cdf::CDataFile::IsDirty() const
+{
+	return m_bDirty;
+}
+
 
 // SetFileName
 // Set's the m_szFileName member variable. For use when creating the CDataFile
@@ -596,7 +611,7 @@ bool cdf::CDataFile::CreateSection(const t_Str &szSection, const t_Str &szCommen
 // Returns true if the specified section exists.
 bool cdf::CDataFile::HasSection(const t_Str &szSection)
 {
-	return (bool)GetSection(szSection);
+	return GetSection(szSection) != NULL;
 }
 
 // SectionCount
