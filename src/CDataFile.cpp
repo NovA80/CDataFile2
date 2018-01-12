@@ -468,8 +468,8 @@ bool cdf::CDataFile::GetBool(const t_Str &szKey, const t_Str &szSection, bool &r
 
 	ret = false;
 	if ( szValue.find("1") == 0
-		 || CompareNoCase(szValue, "true")
-		 || CompareNoCase(szValue, "yes") ) {
+		|| CompareNoCase(szValue, "true") == 0
+		|| CompareNoCase(szValue, "yes") == 0 ) {
 		ret = true;
 	}
 
