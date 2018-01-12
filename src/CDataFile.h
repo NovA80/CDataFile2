@@ -232,6 +232,8 @@ public:
 
 	// Utility Methods
 	/////////////////////////////////////////////////////////////////
+	// HasSection: Returns true if the specified section exists.
+	bool HasSection(const t_Str &szSection);
 	// SectionCount: Returns the number of valid sections in the database.
 	int SectionCount();
 	// KeyCount: Returns the total number of keys, across all sections.

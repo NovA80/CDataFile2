@@ -592,6 +592,13 @@ bool cdf::CDataFile::CreateSection(const t_Str &szSection, const t_Str &szCommen
 	return true;
 }
 
+// HasSection
+// Returns true if the specified section exists.
+bool cdf::CDataFile::HasSection(const t_Str &szSection)
+{
+	return (bool)GetSection(szSection);
+}
+
 // SectionCount
 // Simply returns the number of sections in the list.
 int cdf::CDataFile::SectionCount()
