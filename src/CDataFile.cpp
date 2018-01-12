@@ -123,73 +123,70 @@ bool cdf::CDataFile::Load(const t_Str& szFileName)
 	// We dont want to create a new file here.  If it doesn't exist, just
 	// return false and report the failure.
 	std::ifstream File(szFileName.c_str());
-
-	if ( File.is_open() )
-	{
-		bool bDone = false;
-		bool bAutoKey = (m_Flags & AUTOCREATE_KEYS) == AUTOCREATE_KEYS;
-		bool bAutoSec = (m_Flags & AUTOCREATE_SECTIONS) == AUTOCREATE_SECTIONS;
-
-		t_Str szLine;
-		t_Str szComment;
-		char buffer[MAX_BUFFER_LEN];
-		t_Section* pSection = GetSection("");
-
-		// These need to be set, we'll restore the original values later.
-		m_Flags |= AUTOCREATE_KEYS;
-		m_Flags |= AUTOCREATE_SECTIONS;
-
-		while ( !bDone )
-		{
-			memset(buffer, 0, MAX_BUFFER_LEN);
-			File.getline(buffer, MAX_BUFFER_LEN);
-
-			szLine = buffer;
-			Trim(szLine);
-
-			bDone = ( File.eof() || File.bad() || File.fail() );
-
-			if ( szLine.find_first_of(CommentIndicators) == 0 )
-			{
-				szComment += "\n";
-				szComment += szLine;
-			}
-			else
-			if ( szLine.find_first_of('[') == 0 ) // new section
-			{
-				szLine.erase( 0, 1 );
-				szLine.erase( szLine.find_last_of(']'), 1 );
-
-				CreateSection(szLine, szComment);
-				pSection = GetSection(szLine);
-				szComment = t_Str("");
-			}
-			else
-			if ( szLine.size() > 0 ) // we have a key, add this key/value pair
-			{
-				t_Str szKey = GetNextWord(szLine);
-				t_Str szValue = szLine;
-
-				if ( szKey.size() > 0 )
-				{
-					SetValue(szKey, szValue, szComment, pSection->szName);
-					szComment = t_Str("");
-				}
-			}
-		}
-
-		// Restore the original flag values.
-		if ( !bAutoKey )
-			m_Flags &= ~AUTOCREATE_KEYS;
-
-		if ( !bAutoSec )
-			m_Flags &= ~AUTOCREATE_SECTIONS;
-	}
-	else
+	if ( ! File.is_open() )
 	{
 		Report(E_INFO, "[CDataFile::Load] Unable to open file. Does it exist?");
 		return false;
 	}
+
+	bool bDone = false;
+	bool bAutoKey = (m_Flags & AUTOCREATE_KEYS) == AUTOCREATE_KEYS;
+	bool bAutoSec = (m_Flags & AUTOCREATE_SECTIONS) == AUTOCREATE_SECTIONS;
+
+	t_Str szLine;
+	t_Str szComment;
+	char buffer[MAX_BUFFER_LEN];
+	t_Section* pSection = GetSection("");
+
+	// These need to be set, we'll restore the original values later.
+	m_Flags |= AUTOCREATE_KEYS;
+	m_Flags |= AUTOCREATE_SECTIONS;
+
+	while ( !bDone )
+	{
+		memset(buffer, 0, MAX_BUFFER_LEN);
+		File.getline(buffer, MAX_BUFFER_LEN);
+
+		szLine = buffer;
+		Trim(szLine);
+
+		bDone = ( File.eof() || File.bad() || File.fail() );
+
+		if ( szLine.find_first_of(CommentIndicators) == 0 )
+		{
+			szComment += "\n";
+			szComment += szLine;
+		}
+		else
+		if ( szLine.find_first_of('[') == 0 ) // new section
+		{
+			szLine.erase( 0, 1 );
+			szLine.erase( szLine.find_last_of(']'), 1 );
+
+			CreateSection(szLine, szComment);
+			pSection = GetSection(szLine);
+			szComment = t_Str("");
+		}
+		else
+		if ( szLine.size() > 0 ) // we have a key, add this key/value pair
+		{
+			t_Str szKey = GetNextWord(szLine);
+			t_Str szValue = szLine;
+
+			if ( szKey.size() > 0 )
+			{
+				SetValue(szKey, szValue, szComment, pSection->szName);
+				szComment = t_Str("");
+			}
+		}
+	}
+
+	// Restore the original flag values.
+	if ( !bAutoKey )
+		m_Flags &= ~AUTOCREATE_KEYS;
+
+	if ( !bAutoSec )
+		m_Flags &= ~AUTOCREATE_SECTIONS;
 
 	File.close();
 
@@ -217,54 +214,50 @@ bool cdf::CDataFile::Save()
 	}
 
 	std::ofstream File(m_szFileName.c_str(), std::ios::out|std::ios::trunc);
-
-	if ( File.is_open() )
-	{
-		SectionItor s_pos;
-		KeyItor k_pos;
-		t_Section Section;
-		t_Key Key;
-
-		for (s_pos = m_Sections.begin(); s_pos != m_Sections.end(); s_pos++)
-		{
-			Section = (*s_pos);
-			bool bWroteComment = false;
-
-			if ( Section.szComment.size() > 0 )
-			{
-				bWroteComment = true;
-				WriteLn(File, "\n%s", CommentStr(Section.szComment).c_str());
-			}
-
-			if ( Section.szName.size() > 0 )
-			{
-				WriteLn(File, "%s[%s]",
-						bWroteComment ? "" : "\n",
-						Section.szName.c_str());
-			}
-
-			for (k_pos = Section.Keys.begin(); k_pos != Section.Keys.end(); k_pos++)
-			{
-				Key = (*k_pos);
-
-				if ( Key.szKey.size() > 0 )
-				{
-					WriteLn(File, "%s%s%s%s%c%s",
-						Key.szComment.size() > 0 ? "\n" : "",
-						CommentStr(Key.szComment).c_str(),
-						Key.szComment.size() > 0 ? "\n" : "",
-						Key.szKey.c_str(),
-						EqualIndicators[0],
-						Key.szValue.c_str());
-				}
-			}
-		}
-
-	}
-	else
+	if ( ! File.is_open() )
 	{
 		Report(E_ERROR, "[CDataFile::Save] Unable to save file.");
 		return false;
+	}
+
+	SectionItor s_pos;
+	KeyItor k_pos;
+	t_Section Section;
+	t_Key Key;
+
+	for (s_pos = m_Sections.begin(); s_pos != m_Sections.end(); s_pos++)
+	{
+		Section = (*s_pos);
+		bool bWroteComment = false;
+
+		if ( Section.szComment.size() > 0 )
+		{
+			bWroteComment = true;
+			WriteLn(File, "\n%s", CommentStr(Section.szComment).c_str());
+		}
+
+		if ( Section.szName.size() > 0 )
+		{
+			WriteLn(File, "%s[%s]",
+					bWroteComment ? "" : "\n",
+					Section.szName.c_str());
+		}
+
+		for (k_pos = Section.Keys.begin(); k_pos != Section.Keys.end(); k_pos++)
+		{
+			Key = (*k_pos);
+
+			if ( Key.szKey.size() > 0 )
+			{
+				WriteLn(File, "%s%s%s%s%c%s",
+					Key.szComment.size() > 0 ? "\n" : "",
+					CommentStr(Key.szComment).c_str(),
+					Key.szComment.size() > 0 ? "\n" : "",
+					Key.szKey.c_str(),
+					EqualIndicators[0],
+					Key.szValue.c_str());
+			}
+		}
 	}
 
 	m_bDirty = false;
