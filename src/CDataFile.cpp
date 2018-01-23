@@ -384,7 +384,7 @@ bool cdf::CDataFile::SetFloat(const t_Str &szKey, float fValue, const t_Str &szC
 {
 	char szStr[64];
 
-	snprintf(szStr, 64, "%f", fValue);
+	snprintf(szStr, 64, "%g", fValue);
 
 	return SetValue(szKey, szStr, szComment, szSection);
 }
